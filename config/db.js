@@ -3,13 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function connectDatabase() {
-  const mongoUri = process.env.MONGODB_URI;
+const connectDB = async () => {
+  try {
+    const uri =  process.env.MONGODB_URI;
 
-  if (!mongoUri) {
-    throw new Error('MONGODB_URI is required');
+    const res = await mongoose.connect(uri);
+    console.log(`DB Connected ....`);
+    return res;
+  } catch (err) {
+    console.log(`Fail to connectDB ...${err}`);
+    throw err; // You may want to handle this error further up the call stack
   }
+};
 
-  mongoose.set('strictQuery', true);
-  await mongoose.connect(mongoUri);
-}
+export default connectDB;
