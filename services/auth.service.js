@@ -7,7 +7,7 @@ import {
   saveOTP,
   verifyOTP,
   sendOTPEmail
-} from '../service/email.service.js';
+} from '../services/email.service.js';
 
 // Google client
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -18,7 +18,7 @@ const generateToken = (user) => {
     {
       id: user._id,
       email: user.email,
-      role: user.role,
+      // role: user.role,
       provider: user.provider
     },
     process.env.JWT_SECRET,
@@ -101,6 +101,54 @@ export const verifyRegistrationOTP = async ({ email, otp, name, password }) => {
     message: 'Registration successful',
     token,
     user
+  };
+};
+
+
+// JWT generator
+// const generateToken = (user) => {
+//   return jwt.sign(
+//     {
+//       id: user._id,
+//       email: user.email,
+//     },
+//     process.env.JWT_SECRET,
+//     { expiresIn: '7d' }
+//   );
+// };
+
+// ================= SIMPLE LOGIN =================
+export const login = async ({ email, password }) => {
+  if (!email || !password) {
+    throw new Error('Email and password are required');
+  }
+
+  // Get user with password field
+  const user = await User.findOne({ email }).select('+password');
+
+  if (!user) {
+    throw new Error('Invalid credentials');
+  }
+
+  // Check password using schema method
+  const isMatch = await user.comparePassword(password);
+
+  if (!isMatch) {
+    throw new Error('Invalid credentials');
+  }
+
+  // Generate token
+  const token = generateToken(user);
+
+  return {
+    status: 'success',
+    message: 'Login successful',
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    }
   };
 };
 

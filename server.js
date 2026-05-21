@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { connectDatabase } from './config/db.js';
+import connectDB from './config/db.js';
 import { createApp } from './app.js';
 
 dotenv.config();
@@ -7,7 +7,7 @@ dotenv.config();
 const port = process.env.PORT || 8080;
 const app = createApp();
 
-await connectDatabase();
+await connectDB();
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

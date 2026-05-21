@@ -15,6 +15,7 @@ const router = express.Router();
 import { 
   sendRegistrationOTP,
   verifyRegistrationOTP,
+  login,
   forgotPassword,
   resetPassword,
   refreshToken,
@@ -22,6 +23,7 @@ import {
   googleLogin  // Add this import
 } from '../controllers/auth.controller.js';
 import { body } from 'express-validator';
+import { protect } from '../middleware/authMiddleware.js';
 
 // Validation rules
 const validateEmail = [
@@ -69,6 +71,7 @@ router.post('/google', googleLogin);
 // Registration flow with OTP
 router.post('/send-registration-otp', validateRegistration, sendRegistrationOTP);
 router.post('/verify-registration-otp', verifyRegistrationOTP);
+router.post('/login', validateLogin, login);
 
 // Password reset with OTP
 router.post('/forgot-password', validateEmail, forgotPassword);

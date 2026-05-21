@@ -118,7 +118,7 @@ export const verifyOTP = async (email, enteredOtp, type) => {
 export const sendOTPEmail = async (email, otp, type = 'verification', data = {}) => {
   let subject, html;
   
-  const appName = 'HealthSync';
+  const appName = 'EventManager';
   const currentYear = new Date().getFullYear();
   
   // Color scheme

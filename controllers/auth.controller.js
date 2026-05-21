@@ -616,6 +616,19 @@ export const verifyRegistrationOTP = async (req, res) => {
   }
 };
 
+
+export const login = async (req, res) => {
+  try {
+    const result = await authService.login(req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(401).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
+};
+
 // ================= PASSWORD RESET =================
 export const forgotPassword = async (req, res) => {
   try {
