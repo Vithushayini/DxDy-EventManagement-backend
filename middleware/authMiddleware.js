@@ -70,9 +70,9 @@ export const protect = catchAsync(async (req, res, next) => {
     }
 
     // Check if user is active
-    if (!user.isActive) {
-      return next(createError('Your account has been deactivated', 403));
-    }
+    // if (!user.isActive) {
+    //   return next(createError('Your account has been deactivated', 403));
+    // }
 
     // Check if password was changed after token was issued
     if (user.passwordChangedAt && decoded.iat < user.passwordChangedAt.getTime() / 1000) {

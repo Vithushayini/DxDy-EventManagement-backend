@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes.js';
+import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import apiRoutes from './routes/index.routes.js';
 
 export function createApp() {
   const app = express();
@@ -13,7 +14,8 @@ export function createApp() {
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'success', message: 'Server is running' });
   });
-  app.use('/api/auth', authRoutes);
+  // app.use('/api/auth', authRoutes);
+  app.use('/api', apiRoutes);
 
   app.use(errorHandler);
 
