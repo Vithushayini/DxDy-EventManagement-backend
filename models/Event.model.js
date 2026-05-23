@@ -6,8 +6,10 @@ const eventSchema = new mongoose.Schema(
     slug: { type: String, unique: true, sparse: true },
     description: { type: String, required: true },
     category: { type: String, required: true, index: true },
-    startDate: { type: Date, required: true, index: true },
-    endDate: { type: Date },
+    startDate: { type: String, required: true, index: true }, // Format: YYYY-MM-DD
+    startTime: { type: String, required: true }, // Format: HH:MM
+    endDate: { type: String }, // Format: YYYY-MM-DD
+    endTime: { type: String }, // Format: HH:MM
     organizer: { type: String, required: true },
     imageUrl: { type: String },
     tags: [{ type: String, index: true }],

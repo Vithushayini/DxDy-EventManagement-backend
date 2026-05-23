@@ -26,7 +26,9 @@ export async function enrichLocation(locationInput) {
 
   const results = await response.json();
   const match = results?.[0];
-
+ console.log("queryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",query);
+  console.log("map resultssssssssssssssssssssssssssssssssssssssss",results);
+  
   if (!match) {
     return null;
   }
