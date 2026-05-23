@@ -13,6 +13,14 @@ router.use('/users', userRoutes);
 router.use('/events', eventRoutes);
 router.use('/bookmarks', bookmarkRoutes);
 
-
+// Test route
+router.get('/test', (req, res) => {
+  res.json({ 
+    status: 'success', 
+    message: 'API is working!',
+    timestamp: new Date().toISOString()
+  });
+});
 
 export default router;
+
