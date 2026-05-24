@@ -40,12 +40,12 @@ export const generateOTP = () => {
 // Save OTP to database with expiry (5 minutes)
 export const saveOTP = async (email, otp, type, data = {}) => {
   const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-  
+
   console.log('💾 Saving OTP with data:', { email, otp, type, data });
-  
+
   // Delete any existing OTPs for this email and type
   await OTP.deleteMany({ email, type, verified: false });
-  
+
   // Create new OTP - IMPORTANT: Store userData directly in the document
   const otpRecord = await OTP.create({
     email,
@@ -56,7 +56,7 @@ export const saveOTP = async (email, otp, type, data = {}) => {
     userData: data.userData || null,  // Add this line!
     userId: data.userId || null       // Add this for login OTPs
   });
-  
+
   console.log('✅ OTP saved:', otpRecord);
   return otpRecord;
 };
@@ -64,7 +64,7 @@ export const saveOTP = async (email, otp, type, data = {}) => {
 // Verify OTP from database
 export const verifyOTP = async (email, enteredOtp, type) => {
   console.log('🔎 VERIFY OTP - Input:', { email, enteredOtp, type });
-  
+
   // Find valid OTP
   const otpRecord = await OTP.findOne({
     email,
@@ -73,9 +73,9 @@ export const verifyOTP = async (email, enteredOtp, type) => {
     verified: false,
     expiresAt: { $gt: new Date() }
   });
-  
+
   console.log('📊 Found OTP record:', otpRecord);
-  
+
   if (!otpRecord) {
     // Check if OTP exists but expired
     const expiredOTP = await OTP.findOne({
@@ -84,26 +84,26 @@ export const verifyOTP = async (email, enteredOtp, type) => {
       type,
       verified: false
     });
-    
+
     if (expiredOTP) {
       return { valid: false, message: 'OTP has expired' };
     }
-    
+
     return { valid: false, message: 'Invalid OTP' };
   }
-  
+
   // Check attempts
   if (otpRecord.attempts >= 3) {
     await OTP.deleteOne({ _id: otpRecord._id });
     return { valid: false, message: 'Too many failed attempts. Please request new OTP.' };
   }
-  
+
   // Mark as verified
   otpRecord.verified = true;
   await otpRecord.save();
-  
-  return { 
-    valid: true, 
+
+  return {
+    valid: true,
     message: 'OTP verified successfully',
     data: {
       userData: otpRecord.userData,  // This will now be available!
@@ -117,20 +117,20 @@ export const verifyOTP = async (email, enteredOtp, type) => {
 // Send OTP email - add data parameter
 export const sendOTPEmail = async (email, otp, type = 'verification', data = {}) => {
   let subject, html;
-  
+
   const appName = 'EventManager';
   const currentYear = new Date().getFullYear();
-  
+
   // Color scheme
   const colors = {
-    primary1: '#E36A6A',   // primary-1
-    primary2: '#FFB2B2',   // primary-2
-    primary3: '#FFF2D0',   // primary-3
-    primary4: '#FFFBF1'    // primary-4
+    primary1: "#10B981", // main green (emerald)
+    primary2: "#34D399", // lighter green
+    primary3: "#A7F3D0", // soft mint
+    primary4: "#ECFDF5"  // very light background tint
   };
-  
+
   // Create email template based on type
-  switch(type) {
+  switch (type) {
     case 'registration':
       subject = `Welcome to ${appName} - Verify Your Email`;
       html = `
@@ -179,7 +179,7 @@ export const sendOTPEmail = async (email, otp, type = 'verification', data = {})
         </html>
       `;
       break;
-      
+
     case 'login':
       subject = `${appName} - Login Verification Code`;
       html = `
@@ -227,7 +227,7 @@ export const sendOTPEmail = async (email, otp, type = 'verification', data = {})
         </html>
       `;
       break;
-      
+
     case 'passwordReset':
       subject = `${appName} - Password Reset Request`;
       html = `
@@ -324,7 +324,7 @@ export const sendOTPEmail = async (email, otp, type = 'verification', data = {})
         </html>
       `;
       break;
-      
+
     default:
       subject = `${appName} - Verification Code`;
       html = `
@@ -334,14 +334,14 @@ export const sendOTPEmail = async (email, otp, type = 'verification', data = {})
         </div>
       `;
   }
-  
+
   const mailOptions = {
     from: `"${appName}" <${process.env.EMAIL_USER}>`,
     to: email,
     subject,
     html,
   };
-  
+
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log(`✅ OTP email sent to ${email}: ${info.messageId}`);

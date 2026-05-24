@@ -6,7 +6,7 @@ import {
   login,
   forgotPassword,
   resetPassword,
-  refreshToken,
+  // refreshToken,
   logout,
   googleLogin  // Add this import
 } from '../controllers/auth.controller.js';
@@ -65,8 +65,6 @@ router.post('/login', validateLogin, login);
 router.post('/forgot-password', validateEmail, forgotPassword);
 router.post('/reset-password', validatePasswordReset, resetPassword);
 
-// Token management
-router.post('/refresh-token', refreshToken);
 router.post('/logout', logout);
 
 export default router;

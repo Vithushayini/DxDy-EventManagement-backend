@@ -1,5 +1,4 @@
 import User from '../models/User.model.js';
-import Token from '../models/Token.model.js';
 import { generateOTP, saveOTP, sendOTPEmail, verifyOTP  } from '../services/email.service.js';
 
 // Helper function to create AppError
@@ -92,12 +91,6 @@ export const changePassword = catchAsync(async (req, res, next) => {
   // Update password
   user.password = newPassword;
   await user.save();
-
-  // Blacklist all refresh tokens
-  await Token.updateMany(
-    { userId: user._id, type: 'refresh' },
-    { blacklisted: true }
-  );
 
   res.status(200).json({
     status: 'success',

@@ -53,6 +53,7 @@ export async function listEvents(query) {
   ]);
 
   return {
+    status: 'success',
     items: events,
     page: Number(page),
     limit: Number(limit),

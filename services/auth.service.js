@@ -195,21 +195,6 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
   };
 };
 
-// ================= TOKEN =================
-export const refreshToken = async ({ token }) => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  const user = await User.findById(decoded.id);
-  if (!user) throw new Error('User not found');
-
-  const newToken = generateToken(user);
-
-  return {
-    status: 'success',
-    token: newToken
-  };
-};
-
 export const logout = async () => {
   return {
     status: 'success',
